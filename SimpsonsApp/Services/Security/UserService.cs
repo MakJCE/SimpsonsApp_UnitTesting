@@ -10,9 +10,11 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using SimpsonApp.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SimpsonApp.Services.Security
 {
+    [ExcludeFromCodeCoverage]
     public class UserService : IUserService
     {
         private readonly UserManager<IdentityUser> userManager;

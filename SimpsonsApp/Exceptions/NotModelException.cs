@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SimpsonApp.Exceptions
 {
+    [ExcludeFromCodeCoverage]
     [Serializable]
     public class NotModelException : Exception
     {
