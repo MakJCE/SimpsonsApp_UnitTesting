@@ -288,7 +288,16 @@ namespace UnitTesting.CharacterTest
 
             Assert.IsType<ActionResult<Character>>(result);
         }
-
+        [Fact]
+        public async Task BadRequestUpdateCharacterFromController()
+        {
+            var service = new Mock<ICharacterService>();
+            var character = new Character();
+            var controller = new CharacterController(service.Object);
+            controller.ModelState.AddModelError("error", "some error");
+            var result = await controller.UpdateCharacter(1, character);
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
         public async Task<Character> getOkResultFromService()
         {
             return new Character
