@@ -115,7 +115,6 @@ namespace SimpsonApp.Data.Repository
 
         public async Task<bool> DeleteCharacterAsync(int characId)
         {
-
             var companyToDelete = await _dbContext.Characters.FirstOrDefaultAsync(c => c.ID == characId);
             _dbContext.Characters.Remove(companyToDelete);
             return true;
