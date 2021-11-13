@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace SimpsonApp.Exceptions
 {
-    [ExcludeFromCodeCoverage]
     [Serializable]
     public class DatabaseException : Exception
     {

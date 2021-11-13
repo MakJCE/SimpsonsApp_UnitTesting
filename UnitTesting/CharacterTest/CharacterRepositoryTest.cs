@@ -3,19 +3,31 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using System.Diagnostics.CodeAnalysis;
-using SimpsonApp.Data.Entities;
-using SimpsonApp.Data.Repository;
-using SimpsonApp.Data;
 using Moq;
+using AutoMapper;
+using System.Diagnostics.CodeAnalysis;
+using SimpsonApp.Data;
+using SimpsonApp.Data.Repository;
+using SimpsonApp.Models;
+using SimpsonApp.Data.Entities;
+using SimpsonApp.Exceptions;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
+using Microsoft.EntityFrameworkCore;
 namespace UnitTesting.CharacterTest
 {
     [ExcludeFromCodeCoverage]
     public class CharacterRepositoryTest
     {
+        
+        [Fact]
+        public void CreateCharacterRepository()
+        {
+            var dbContext = new Mock<LibraryDbContext>();
+
+            var repository = new LibraryRepository(dbContext.Object);
+            Assert.IsType<LibraryRepository>(repository);
+        }
         /*
         [Fact]
         public void CharacterEntityTestAsync()

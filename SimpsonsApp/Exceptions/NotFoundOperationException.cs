@@ -8,7 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SimpsonApp.Exceptions
 {
-    [ExcludeFromCodeCoverage]
     [Serializable]
     public class NotFoundOperationException : Exception
     {

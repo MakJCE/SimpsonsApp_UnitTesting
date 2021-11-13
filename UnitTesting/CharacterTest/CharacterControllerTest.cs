@@ -110,7 +110,18 @@ namespace UnitTesting.CharacterTest
 
             Assert.IsType<ActionResult<IEnumerable<Phrase>>>(result);
         }
+        [Fact]
+        public async Task ExceptionCreateCharacterFromController()
+        {
+            var mock = new Mock<ICharacterService>();
+            var controller = new CharacterController(mock.Object);
+            var character = new Character() { ID = 1, Name = "Homero Simpson" };
+            mock.Setup(service => service.CreateCharacterAsync(character))
+            .Returns(getException<Character>(new Exception())).Verifiable();
 
+            var result = await controller.CreateCharacterAsync(character);
+            Assert.IsType<ActionResult<Character>>(result);
+        }
 
         [Fact]
         public async Task ExceptionGetCharactersFromController()
@@ -122,7 +133,7 @@ namespace UnitTesting.CharacterTest
             bool showPrase = false;
             mock.Setup(repo => repo.getCharacters(orderBy, showPrase))
             .Returns(getException<IEnumerable<Character>>(new Exception())).Verifiable();
- 
+
             var result = await controller.getCharacters(showPrase, orderBy);
             Assert.IsType<ActionResult<IEnumerable<Character>>>(result);
         }
@@ -155,6 +166,138 @@ namespace UnitTesting.CharacterTest
             Assert.Throws<Exception>(new Exception());
         }
         */
+        [Fact]
+        public async Task ExceptionGetCharacterFromController()
+        {
+            var mock = new Mock<ICharacterService>();
+            var controller = new CharacterController(mock.Object);
+            int id = 1;
+            bool showPrase = false;
+            mock.Setup(service => service.GetCharacterAsync(id, showPrase))
+            .Returns(getException<Character>(new Exception())).Verifiable();
+
+            var result = await controller.GetCharacter(id, showPrase);
+            Assert.IsType<ActionResult<Character>>(result);
+        }
+        [Fact]
+        public async Task NotFoundOperationExceptionGetCharacterFromController()
+        {
+            var mock = new Mock<ICharacterService>();
+            var controller = new CharacterController(mock.Object);
+            int id = 1;
+            bool showPrase = false;
+            mock.Setup(service => service.GetCharacterAsync(id, showPrase))
+            .Returns(getException<Character>(new NotFoundOperationException("message"))).Verifiable();
+
+            var result = await controller.GetCharacter(id, showPrase);
+            Assert.IsType<ActionResult<Character>>(result);
+        }
+        [Fact]
+        public async Task ExceptionDeleteCharacterFromController()
+        {
+            var mock = new Mock<ICharacterService>();
+            var controller = new CharacterController(mock.Object);
+            int id = 1;
+            mock.Setup(service => service.DeleteCharacterAsync(id))
+            .Returns(getException<DeleteModel>(new Exception())).Verifiable();
+
+            var result = await controller.DeleteCharacterAsync(id);
+            Assert.IsType<ActionResult<DeleteModel>>(result);
+        }
+        [Fact]
+        public async Task NotFoundOperationExceptionDeleteCharacterFromController()
+        {
+            var mock = new Mock<ICharacterService>();
+            var controller = new CharacterController(mock.Object);
+            int id = 1;
+            mock.Setup(service => service.DeleteCharacterAsync(id))
+            .Returns(getException<DeleteModel>(new NotFoundOperationException("message"))).Verifiable();
+
+            var result = await controller.DeleteCharacterAsync(id);
+            Assert.IsType<ActionResult<DeleteModel>>(result);
+        }
+        [Fact]
+        public async Task ExceptionUpdateCharacterFromController()
+        {
+            var mock = new Mock<ICharacterService>();
+            var controller = new CharacterController(mock.Object);
+            int id = 1;
+            Character character = new Character() { Name = "Modesto Rosado" };
+            mock.Setup(service => service.UpdateCharacter(id, character))
+            .Returns(getException<Character>(new Exception())).Verifiable();
+
+            var result = await controller.UpdateCharacter(id, character);
+            Assert.IsType<ObjectResult>(result);
+        }
+        [Fact]
+        public async Task NotFoundOperationExceptionUpdateCharacterFromController()
+        {
+            var mock = new Mock<ICharacterService>();
+            var controller = new CharacterController(mock.Object);
+            int id = 1;
+            Character character = new Character() { Name = "Modesto Rosado" };
+            mock.Setup(service => service.UpdateCharacter(id, character))
+            .Returns(getException<Character>(new NotFoundOperationException("message"))).Verifiable();
+
+            var result = await controller.UpdateCharacter(id, character);
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
+        [Fact]
+        public async Task ExceptionGetPhrasesFromController()
+        {
+            var mock = new Mock<ICharacterService>();
+            var controller = new CharacterController(mock.Object);
+            mock.Setup(service => service.getPhrases())
+            .Returns(getException<IEnumerable<Phrase>>(new Exception())).Verifiable();
+
+            var result = await controller.getPhrases();
+            Assert.IsType<ActionResult<IEnumerable<Phrase>>>(result);
+        }
+        [Fact]
+        public async Task NotFoundOperationExceptionGetPhrasesFromController()
+        {
+            var mock = new Mock<ICharacterService>();
+            var controller = new CharacterController(mock.Object);
+            mock.Setup(service => service.getPhrases())
+            .Returns(getException<IEnumerable<Phrase>>(new NotFoundOperationException("message"))).Verifiable();
+
+            var result = await controller.getPhrases();
+            Assert.IsType<ActionResult<IEnumerable<Phrase>>>(result);
+        }
+
+        [Fact]
+        public async Task BadRequestCreateCharacterFromController()
+        {
+
+            var service = new Mock<ICharacterService>();
+            var controller = new CharacterController(service.Object);
+            controller.ModelState.AddModelError("key", "error message");
+            var character = new Character()
+            {
+                ID = 1,
+                Name = "Uvuvwevwevwe Onyetenyevwe Ugwemuhwem Osas ssssssssssssssssssssssssssssssssssssssssssssss",
+                Age = 11000,
+                Occupation = "",
+                isProta = true,
+                appearingSeason = 44
+            };
+            service.Setup(repo => repo.CreateCharacterAsync(character))
+                .Returns(getOkResultFromService())
+                .Verifiable();
+            var result = await controller.CreateCharacterAsync(character);
+
+            Assert.IsType<ActionResult<Character>>(result);
+        }
+        [Fact]
+        public async Task BadRequestUpdateCharacterFromController()
+        {
+            var service = new Mock<ICharacterService>();
+            var character = new Character();
+            var controller = new CharacterController(service.Object);
+            controller.ModelState.AddModelError("error", "some error");
+            var result = await controller.UpdateCharacter(1, character);
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
         public async Task<Character> getOkResultFromService()
         {
             return new Character
@@ -185,6 +328,6 @@ namespace UnitTesting.CharacterTest
         {
             throw exc;
         }
- 
+
     }
 }
