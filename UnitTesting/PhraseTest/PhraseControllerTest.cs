@@ -136,5 +136,86 @@ namespace UnitTesting.PhraseTest
             var result = await controller.getPhrases(id);
             Assert.IsType<ActionResult<IEnumerable<Phrase>>>(result);
         }
+        [Fact]
+        public async Task NotFoundOperationExceptionGetPhrasesFromController()
+        {
+
+            var mock = new Mock<IPhraseService>();
+            var controller = new PhraseController(mock.Object);
+            int id = 1;
+            mock.Setup(repo => repo.getPhrases(id))
+            .Returns(utils.getException<IEnumerable<Phrase>>(new NotFoundOperationException("message"))).Verifiable();
+
+            var result = await controller.getPhrases(id);
+            Assert.IsType<ActionResult<IEnumerable<Phrase>>>(result);
+        }
+        [Fact]
+        public async Task ExceptionGetPhraseFromController()
+        {
+            var mock = new Mock<IPhraseService>();
+            var controller = new PhraseController(mock.Object);
+            int id = 1;
+            mock.Setup(service => service.GetphraseAsync(id,id))
+            .Returns(utils.getException<Phrase>(new Exception())).Verifiable();
+
+            var result = await controller.GetPhraseAsync(id, id);
+            Assert.IsType<ActionResult<Phrase>>(result);
+        }
+        [Fact]
+        public async Task NotFoundOperationExceptionGetPhraseFromController()
+        {
+            var mock = new Mock<IPhraseService>();
+            var controller = new PhraseController(mock.Object);
+            int id = 1;
+            mock.Setup(service => service.GetphraseAsync(id, id))
+            .Returns(utils.getException<Phrase>(new NotFoundOperationException("message"))).Verifiable();
+
+            var result = await controller.GetPhraseAsync(id, id);
+            Assert.IsType<ActionResult<Phrase>>(result);
+        }
+        [Fact]
+        public async Task NotFoundExceptionDeletePhraseFromController()
+        {
+            var mock = new Mock<IPhraseService>();
+            var controller = new PhraseController(mock.Object);
+            int id = 1;
+            mock.Setup(service => service.DeletePhraseAsync(id,id))
+            .Returns(utils.getException<bool>(new NotFoundOperationException("message"))).Verifiable();
+
+            Assert.ThrowsAsync<NotFoundOperationException>(async () => { await controller.DeletePhraseAsync(id, id); });
+        }
+        [Fact]
+        public async Task ExceptionDeletePhraseFromController()
+        {
+            var mock = new Mock<IPhraseService>();
+            var controller = new PhraseController(mock.Object);
+            int id = 1;
+            mock.Setup(service => service.DeletePhraseAsync(id, id))
+            .Returns(utils.getException<bool>(new Exception("message"))).Verifiable();
+
+            Assert.ThrowsAsync<Exception>(async () => { await controller.DeletePhraseAsync(id, id); });
+        }
+        [Fact]
+        public async Task ExceptionUpdatePhraseFromController()
+        {
+            var mock = new Mock<IPhraseService>();
+            var controller = new PhraseController(mock.Object);
+            int id = 1;
+            Phrase frase = new Phrase () { Content = "asda" };
+            mock.Setup(service => service.UpdatePhraseAsync(id, id, frase))
+            .Returns(utils.getException<bool>(new Exception("message"))).Verifiable();
+            Assert.ThrowsAsync<Exception>(async () => { await controller.UpdatePhraseAsync(id, id, frase); });
+        }
+        [Fact]
+        public async Task NotFoundOperationExceptionUpdatePhraseFromController()
+        {
+            var mock = new Mock<IPhraseService>();
+            var controller = new PhraseController(mock.Object);
+            int id = 1;
+            Phrase frase = new Phrase() { Content = "Soy homero el malo" };
+            mock.Setup(service => service.UpdatePhraseAsync(id, id,frase))
+            .Returns(utils.getException<bool>(new NotFoundOperationException("message"))).Verifiable();
+            Assert.ThrowsAsync<NotFoundOperationException>(async () => { await controller.UpdatePhraseAsync(id, id, frase); });
+        }
     }
 }
