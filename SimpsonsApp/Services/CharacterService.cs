@@ -70,7 +70,6 @@ namespace SimpsonApp.Services
             var characEntity = _mapper.Map<CharacterEntity>(charac);
             _libraryRepository.CreateCharacter(characEntity);
             var result = await _libraryRepository.SaveChangesAsync();
-
             if (result)
             {
                 return _mapper.Map<Character>(characEntity);

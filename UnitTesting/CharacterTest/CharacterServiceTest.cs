@@ -40,7 +40,7 @@ namespace UnitTesting.CharacterTest
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<IEnumerable<Character>>(charactersEntity))
-                .Returns(mapperSimulator<IEnumerable<Character>>(new List<Character>()))
+                .Returns(new List<Character>())
                 .Verifiable();
 
             var servicio = new CharacterService(mapperMock.Object, repoMock.Object);
@@ -58,7 +58,7 @@ namespace UnitTesting.CharacterTest
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<IEnumerable<Phrase>>(phrasesEntity))
-                .Returns(mapperSimulator<IEnumerable<Phrase>>(new List<Phrase>()))
+                .Returns(new List<Phrase>())
                 .Verifiable();
 
             var servicio = new CharacterService(mapperMock.Object, repoMock.Object);
@@ -77,41 +77,42 @@ namespace UnitTesting.CharacterTest
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<Character>(characterEntity))
-                .Returns(mapperSimulator<Character>(new Character()))
+                .Returns(new Character())
                 .Verifiable();
 
             var servicio = new CharacterService(mapperMock.Object, repoMock.Object);
             var result = await servicio.GetCharacterAsync(1, false);
             Assert.IsType<Character>(result);
         }
-        /*
+        
         [Fact]
         public async Task CreateCharacterFromServiceTest()
         {
             var repoMock = new Mock<ILibraryRepository>();
             var mapperMock = new Mock<IMapper>();
-            var character = new Character();
-            var characterEntity = new CharacterEntity();
+            var character = new Character() { ID=1};
+            var characterEntity = new CharacterEntity() { ID = 1 };
 
             repoMock.Setup(repo => repo.SaveChangesAsync())
                 .Returns(validSaveElement())
                 .Verifiable();
+        
+            repoMock.Setup(repo => repo.CreateCharacter(characterEntity))
+                .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<CharacterEntity>(character))
-                .Returns(mapperSimulator<CharacterEntity>(characterEntity))
+                .Returns(characterEntity)
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<Character>(characterEntity))
-                .Returns(mapperSimulator<Character>(character))
+                .Returns(character)
                 .Verifiable();
 
 
             var servicio = new CharacterService(mapperMock.Object, repoMock.Object);
-            var result = await servicio.CreateCharacterAsync(new Character() { ID = 1 });
+            var result = await servicio.CreateCharacterAsync(character);
             Assert.IsType<Character>(result);
         }
-        */
-        /*
         [Fact]
         public async Task UpdateCharacterFromServiceTest()
         {
@@ -133,14 +134,18 @@ namespace UnitTesting.CharacterTest
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<CharacterEntity>(character))
-                .Returns(mapperSimulator<CharacterEntity>(characterEntity))
+                .Returns(characterEntity)
+                .Verifiable();
+
+            mapperMock.Setup(mapper => mapper.Map<Character>(characterEntity))
+                .Returns(character)
                 .Verifiable();
 
             var servicio = new CharacterService(mapperMock.Object, repoMock.Object);
             var result = await servicio.UpdateCharacter(1, character);
             Assert.IsType<Character>(result);
         }
-        */
+        
         [Fact]
         public async Task DeleteCharacterFromServiceTest()
         {
@@ -162,11 +167,11 @@ namespace UnitTesting.CharacterTest
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<CharacterEntity>(character))
-                .Returns(mapperSimulator<CharacterEntity>(characterEntity))
+                .Returns(characterEntity)
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<Character>(characterEntity))
-                .Returns(mapperSimulator<Character>(character))
+                .Returns(character)
                 .Verifiable();
 
 
@@ -195,11 +200,11 @@ namespace UnitTesting.CharacterTest
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<CharacterEntity>(character))
-                .Returns(mapperSimulator<CharacterEntity>(characterEntity))
+                .Returns(characterEntity)
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<Character>(characterEntity))
-                .Returns(mapperSimulator<Character>(character))
+                .Returns(character)
                 .Verifiable();
 
 
@@ -258,7 +263,7 @@ namespace UnitTesting.CharacterTest
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<CharacterEntity>(character))
-                .Returns(mapperSimulator<CharacterEntity>(characterEntity))
+                .Returns(characterEntity)
                 .Verifiable();
             var servicio = new CharacterService(mapperMock.Object, repoMock.Object);
 
@@ -285,11 +290,11 @@ namespace UnitTesting.CharacterTest
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<CharacterEntity>(character))
-                .Returns(mapperSimulator<CharacterEntity>(characterEntity))
+                .Returns(characterEntity)
                 .Verifiable();
 
             mapperMock.Setup(mapper => mapper.Map<Character>(characterEntity))
-                .Returns(mapperSimulator<Character>(character))
+                .Returns(character)
                 .Verifiable();
 
 
@@ -309,14 +314,6 @@ namespace UnitTesting.CharacterTest
         public async Task<T> getObject<T>(T element)
         {
             return element;
-        }
-        public T mapperSimulator<T>(T element)
-        {
-            return element;
-        }
-        public void createCharacter(CharacterEntity character)
-        {
-
         }
         public async Task<bool> validSaveElement()
         {
