@@ -321,8 +321,8 @@ namespace UnitTesting.CharacterTest
         }
         public async Task<DeleteModel> getDeleteModel()
         {
-            DeleteModel model = new DeleteModel() { IsSuccess = true, Message = "Fue eliminado" };
-            return model;
+                DeleteModel model = new DeleteModel() { IsSuccess = true, Message = "Fue eliminado" };
+                return model;
         }
         public async Task<T> getException<T>(Exception exc)
         {
