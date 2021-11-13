@@ -19,31 +19,45 @@ namespace UnitTesting.CharacterTest
     [ExcludeFromCodeCoverage]
     public class CharacterRepositoryTest
     {
-        
         [Fact]
         public void CreateCharacterRepository()
         {
-            var dbContext = new Mock<LibraryDbContext>();
+            // Crear db context y simular la conexion a BD
+            var options = new DbContextOptionsBuilder<LibraryDbContext>();
+            options.UseSqlServer("Server = (localdb)\\mssqllocaldb;Database=SimpsonAPI;Trusted_Connection=True;");
 
-            var repository = new LibraryRepository(dbContext.Object);
+            var _dbContext = new LibraryDbContext(options.Options);
+            //var dbcontextMock = new Mock<LibraryDbContext>(options.Options);
+
+            //creating _dbContext as a Mock
+            //dbcontextMock.Setup(dbc => dbc.Characters.AsNoTracking())
+            //    .Returns(OkResult_GetCharacters(_dbContext.Characters))
+            //    .Verifiable();
+
+            // getting the results
+            var repository = new LibraryRepository(_dbContext);
             Assert.IsType<LibraryRepository>(repository);
         }
-        /*
         [Fact]
-        public void CharacterEntityTestAsync()
+        public async void GetCharactersFromRepository()
         {
-            HashSet<string> allowedOrderByParameters = new HashSet<string>()
-            {
-                "id","name","age"
-            };
-            //var mockRepo = new Mock<LibraryDbContext>();
-            DbContextOptions<LibraryDbContext> options;
-            //LibraryDbContext context = new LibraryDbContext(options.ContextType);
-            //LibraryRepository repository = new LibraryRepository(mockRepo.Object);
-            //var res = await repository.GetCharactersAsync("id", false);
-            ///Assert.IsType<CharacterEntity[]>(res);
-            //Assert.IsType<Mock<LibraryDbContext>>(mockRepo);
+            // Crear db context y simular la conexion a BD
+            var options = new DbContextOptionsBuilder<LibraryDbContext>();
+            options.UseSqlServer("Server = (localdb)\\mssqllocaldb;Database=SimpsonAPI;Trusted_Connection=True;");
+
+            var _dbContext = new LibraryDbContext(options.Options);
+            //var dbcontextMock = new Mock<LibraryDbContext>(options.Options);
+
+            //creating _dbContext as a Mock
+            //dbcontextMock.Setup(dbc => dbc.Characters.AsNoTracking())
+            //    .Returns(OkResult_GetCharacters(_dbContext.Characters))
+            //    .Verifiable();
+
+            // getting the results
+            var repository = new LibraryRepository(_dbContext);
+
+            var result = await repository.GetCharactersAsync("id", true);
+            Assert.IsType<List<CharacterEntity>>(result);
         }
-        */
     }
 }
