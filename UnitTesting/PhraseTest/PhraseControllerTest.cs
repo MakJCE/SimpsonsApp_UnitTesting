@@ -225,7 +225,7 @@ namespace UnitTesting.PhraseTest
             int id = 1;
             var frase = new Phrase()
             {
-                ID = 1,
+                ID = 2,
                 Content = "Marge hay otro hombre en esta casa?",
                 Season = 1,
                 Popularity = "Alta",
@@ -234,7 +234,7 @@ namespace UnitTesting.PhraseTest
             };
             mock.Setup(service => service.CreatePhraseAsync(id, frase))
             .Returns(utils.getException<Phrase>(new NotFoundOperationException("message"))).Verifiable();
-            await Assert.ThrowsAsync<NotFoundOperationException>(async () => { await controller.CreatePhraseAsync(id, frase); });
+            Assert.ThrowsAsync<NotFoundOperationException>(async () => { await controller.CreatePhraseAsync(id, frase); });
         }
         [Fact]
         public async Task BadRequestCreatePhraseFromController()
@@ -276,6 +276,31 @@ namespace UnitTesting.PhraseTest
             var listoflikes = new List<int>();
             var result = await controller.LikePhraseAsync(1,listoflikes);
             Assert.IsType<ActionResult<Phrase>>(result);
+        }
+
+        [Fact]
+        public async Task NotFoundLikeFromController()
+        {
+            var mock = new Mock<IPhraseService>();
+            var controller = new PhraseController(mock.Object);
+            int id = 1;
+            var listoflikes = new List<int>();
+            Phrase frase = new Phrase() { Content = "Soy homero el malo" };
+            mock.Setup(service => service.addLikes(id,listoflikes))
+            .Returns(utils.getException<bool>(new NotFoundOperationException("message"))).Verifiable();
+            Assert.ThrowsAsync<NotFoundOperationException>(async () => { await controller.LikePhraseAsync(id, listoflikes); });
+        }
+        [Fact]
+        public async Task GenericExceptionLikeFromController()
+        {
+            var mock = new Mock<IPhraseService>();
+            var controller = new PhraseController(mock.Object);
+            int id = 1;
+            var listoflikes = new List<int>();
+            Phrase frase = new Phrase() { Content = "Soy homero el malo" };
+            mock.Setup(service => service.addLikes(id, listoflikes))
+            .Returns(utils.getException<bool>(new Exception("message"))).Verifiable();
+            Assert.ThrowsAsync<Exception>(async () => { await controller.LikePhraseAsync(id, listoflikes); });
         }
     }
 }
