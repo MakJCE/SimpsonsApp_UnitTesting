@@ -23,19 +23,24 @@ namespace UnitTesting.PhraseTest
     public class PhraseRepositoryTest
     {
         [Fact]
-        public void CreatePhraseSuccessfully()
+        public async void CreatePhraseSuccessfully()
         {
             var options = new DbContextOptionsBuilder<LibraryDbContext>();
             options.UseSqlServer("Server = (localdb)\\mssqllocaldb;Database=SimpsonAPI;Trusted_Connection=True;");
             var _dbContext = new LibraryDbContext(options.Options);
             var repository = new LibraryRepository(_dbContext);
-            var phraseEntity = new PhraseEntity() { Content = "ay caramba" };
+            var phraseEntity = new PhraseEntity() { Content = "Diablos le moví el cerebro" };
             
             repository.CreatePhrase(phraseEntity);
+            await repository.SaveChangesAsync();
             IQueryable<PhraseEntity> query = _dbContext.Phrases;
 
-            var result = query.First<PhraseEntity>(p => p.Content == "ay caramba");
+            var result = query.First<PhraseEntity>(p => p.Content == "Diablos le moví el cerebro");
             Assert.NotNull(result);
+
+            var list = await _dbContext.Phrases.ToListAsync();
+            var id = list.Find(c => c.Content == "Diablos le moví el cerebro").ID;
+            await deleteCaseAsync(repository, id);
         }
         [Fact]
         public async void GetPhrasesSuccessfully()
@@ -88,15 +93,19 @@ namespace UnitTesting.PhraseTest
             options.UseSqlServer("Server = (localdb)\\mssqllocaldb;Database=SimpsonAPI;Trusted_Connection=True;");
             var _dbContext = new LibraryDbContext(options.Options);
             var repository = new LibraryRepository(_dbContext);
+            var id = await createATestPhraseAsync(repository, _dbContext);
             var phraseEntity = new PhraseEntity()
             {
-                ID = 1,
-                Content = "Salta Willy, salta!. Relator: Willy no lo logró"
+                ID = id,
+                Content = "Salta Walas, salta!. Relator: Willy no lo logró"
             };
-            var id = await createATestPhraseAsync(repository, _dbContext);
-            phraseEntity.ID = id;
             var result = await repository.UpdatePhraseAsync(phraseEntity);
+            await repository.SaveChangesAsync();
             Assert.True(result);
+
+            var result_updated = await repository.GetPhraseAsync(id);
+            Assert.NotNull(result_updated);
+            Assert.Equal("Salta Walas, salta!. Relator: Willy no lo logró", result_updated.Content);
             await deleteCaseAsync(repository, id);
         }
         [Fact]
@@ -110,6 +119,7 @@ namespace UnitTesting.PhraseTest
             var phraseEntity = new PhraseEntity() { Content = "Diablos le moví el cerebro", Character = await getExistingCharacter(repository) };
 
             repository.CreatePhrase(phraseEntity);
+            await repository.SaveChangesAsync();
             IQueryable<PhraseEntity> query = _dbContext.Phrases;
 
             var result = query.First<PhraseEntity>(p => p.Content == "Diablos le moví el cerebro");
