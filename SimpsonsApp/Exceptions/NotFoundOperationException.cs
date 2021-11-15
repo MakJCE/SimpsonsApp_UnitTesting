@@ -9,6 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SimpsonApp.Exceptions
 {
     [Serializable]
+    [ExcludeFromCodeCoverage]
     public class NotFoundOperationException : Exception
     {
         protected NotFoundOperationException(SerializationInfo info, StreamingContext context) : base(info, context)

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace SimpsonApp.Exceptions
 {
     [Serializable]
+    [ExcludeFromCodeCoverage]
     public class DatabaseException : Exception
     {
         protected DatabaseException(SerializationInfo info, StreamingContext context) : base(info, context)
