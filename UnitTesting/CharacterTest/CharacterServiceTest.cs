@@ -26,7 +26,7 @@ namespace UnitTesting.CharacterTest
 
             Assert.IsType<CharacterService>(service);
         }
-  
+
 
         [Fact]
         public async void GetCharactersFromServiceTest()
@@ -84,7 +84,6 @@ namespace UnitTesting.CharacterTest
             var result = await servicio.GetCharacterAsync(1, false);
             Assert.IsType<Character>(result);
         }
-        
         [Fact]
         public async Task CreateCharacterFromServiceTest()
         {
