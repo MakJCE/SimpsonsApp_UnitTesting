@@ -21,7 +21,7 @@ namespace SimpsonApp.Services
             _libraryRepository = libraryRepository;
         }
 
-        private async Task validateCharacter(int charID)
+        public async Task validateCharacter(int charID)
         {
             var character = await _libraryRepository.GetCharacterAsync(charID); 
             if (character == null)
@@ -29,7 +29,7 @@ namespace SimpsonApp.Services
                 throw new NotFoundOperationException($"the character id:{charID}, does not exist");
             }
         }
-        private async Task validatePhrase(int phraseID)
+        public async Task validatePhrase(int phraseID)
         {
             var phrase = await _libraryRepository.GetPhraseAsync(phraseID);
             if (phrase == null)
@@ -38,7 +38,7 @@ namespace SimpsonApp.Services
             }
         }
        
-        public async  Task<Phrase> GetphraseAsync(int charID, int PharaseId)
+        public async Task<Phrase> GetphraseAsync(int charID, int PharaseId)
         {
             await validateCharacter(charID);
             await validatePhrase(PharaseId);
