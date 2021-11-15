@@ -101,18 +101,34 @@ namespace UnitTesting.PhraseTest
             var result = await servicio.GetphraseAsync(1, 1);
             Assert.IsType<Phrase>(result);
         }
-
         [Fact]
         public void GetPhraseFailTest()
         {
-            IMapper mapper = null;
-            var mock = new Mock<ILibraryRepository>();
-            mock.Setup(repo => repo.GetPhraseAsync(1))
-               .Returns(utils.specificPhrase())
-               .Verifiable();
-            var service = new PhraseService(mapper, mock.Object);
-            Assert.ThrowsAsync<NotFoundOperationException>(async () => { await service.GetphraseAsync(2, 2); ; });
+            var repoMock = new Mock<ILibraryRepository>();
+            var mapperMock = new Mock<IMapper>();
+            var characterEntity = new CharacterEntity() { ID = 2 };
+            var phraseEntity = new PhraseEntity() { ID = 1, Character = characterEntity };
+            repoMock.Setup(repo => repo.GetCharacterAsync(1, false))
+                .Returns(async () => {
+                    return characterEntity;
+                })
+                .Verifiable();
+
+            repoMock.Setup(repo => repo.GetPhraseAsync(1))
+                .Returns(async () =>
+                {
+                    return phraseEntity;
+                })
+                .Verifiable();
+
+            mapperMock.Setup(mapper => mapper.Map<Phrase>(phraseEntity))
+                .Returns(new Phrase())
+                .Verifiable();
+
+            var servicio = new PhraseService(mapperMock.Object, repoMock.Object);
+            Assert.ThrowsAsync<NotFoundOperationException>(async () => { await servicio.GetphraseAsync(1, 1); });
         }
+
 
     }
 }
