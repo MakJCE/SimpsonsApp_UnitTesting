@@ -69,19 +69,15 @@ namespace UnitTesting.UtilsMock
             return null;
         }
 
-        public async Task<PhraseEntity> specificPhrase()
+        public async Task<IEnumerable<PhraseEntity>> getPhrasesFromService()
         {
-            return new PhraseEntity
-            {
-                ID = 1,
-                Content = "No vives de ensalada",
-                Season = 1,
-                Popularity = "Alta",
-                Likes = 0,
-                Character = new CharacterEntity() { ID = 1 , Name = "Homero"}
-            };
+            return new List<PhraseEntity>();
         }
-        public T mapperSimulator<T>(T element)
+        public async Task<bool> validSaveElement()
+        {
+            return true;
+        }
+        public async Task<T> getObject<T>(T element)
         {
             return element;
         }
